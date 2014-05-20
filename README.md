@@ -1,4 +1,3 @@
-Project-Euler
-=============
+# README #
 
-Solutions to the Project Euler problem set
+This repo contains the Ruby solutions for the problem set on Project Euler.
