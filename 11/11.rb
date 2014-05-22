@@ -51,12 +51,11 @@ grid_hash.each_pair {|key, value|
 # check vertically
 vertical_maximum_product = 1
 
-(0..15).each { |column|
-  (0..15).each { |row|
+(0..16).each { |column|
+  (0..16).each { |row|
     four_numbers = []
-    four_numbers << grid_hash[[row, column]]
-    (1..3).each {|index|
-      four_numbers << grid_hash[[row + index, column]]
+    (row..row+3).each {|index|
+      four_numbers << grid_hash[[index, column]]
     }
     
     product = four_numbers.inject(1) {|memo, num| memo * num }
@@ -69,12 +68,11 @@ puts "vertical: " + vertical_maximum_product.to_s
 # check horizontally
 horizontal_maximum_product = 1
 
-(0..15).each {|row|
-  (0..15).each {|column|
+(0..16).each {|row|
+  (0..16).each {|column|
     four_numbers = []
-    four_numbers << grid_hash[[row, column]]
-    (1..3).each{|index|
-      four_numbers << grid_hash[[row, column + index]]
+    (column..column+3).each{|index|
+      four_numbers << grid_hash[[row, index]]
     }
     
     product = four_numbers.inject(1) { |mem, var| mem * var }
@@ -88,12 +86,11 @@ puts "horizontal: " + horizontal_maximum_product.to_s
 diagonal_maximum_product = 1
 
 # middle
-# =>          (0,0) (1,1) (2,2) (3,3) | (1,1) (2,2) (3,3) (4,4) | ...
+# =>          (0,0) (1,1) (2,2) (3,3) | (1,1) (2,2) (3,3) (4,4) | ... | (16,16) (17,17) (18,18) (19,19)
 middle_max_product = 1
 (0..16).each {|row_column|
   four_numbers = []
-  four_numbers << grid_hash[[row_column, row_column]]
-  (1..3).each {|index|
+  (0..3).each {|index|
     four_numbers << grid_hash[[row_column + index, row_column + index]]
   }
   
@@ -102,7 +99,7 @@ middle_max_product = 1
 }
 
 # =>          - upper
-#             (0,1) (1,2) (2,3) (3,4) | (1,2) (2,3) (3,4) (4,5) | ...
+#             (0,1) (1,2) (2,3) (3,4) | (1,2) (2,3) (3,4) (4,5) | ... | (18,19)
 # =>          (0,2) (1,3) (2,4) (3,5) | (1,3) (2,4) (3,5) (4,6) | ...
 # =>          ....
 # =>          (0,16) (1,17) (2,18) (3,19)
