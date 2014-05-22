@@ -1,12 +1,10 @@
-# In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
-#00 0  1  2  3  4  5  6
-#0 08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
-#1 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
-#2 81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65
-#3 52 70 95 23 04 60 11 42 69 24 68 56 01 32 56 71 37 02 36 91
-#4 22 31 16 71 51 67 63 89 41 92 36 54 22 40 40 28 66 33 13 80
-#5 24 47 32 60 99 03 45 02 44 75 33 53 78 36 84 20 35 17 12 50
-#6 32 98 81 28 64 23 67 10 26 38 40 67 59 54 70 66 18 38 64 70
+# 08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
+# 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
+# 81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65
+# 52 70 95 23 04 60 11 42 69 24 68 56 01 32 56 71 37 02 36 91
+# 22 31 16 71 51 67 63 89 41 92 36 54 22 40 40 28 66 33 13 80
+# 24 47 32 60 99 03 45 02 44 75 33 53 78 36 84 20 35 17 12 50
+# 32 98 81 28 64 23 67 10 26 38 40 67 59 54 70 66 18 38 64 70
 # 67 26 20 68 02 62 12 20 95 63 94 39 63 08 40 91 66 49 94 21
 # 24 55 58 05 66 73 99 26 97 17 78 78 96 83 14 88 34 89 63 72
 # 21 36 23 09 75 00 76 44 20 45 35 14 00 61 33 97 34 31 33 95
@@ -24,6 +22,35 @@
 # The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
 # 
 # What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
+
+# calculates the maximum product of 4 adjacent numbers for an array
+def max_product_of_four_adjacent_numbers_from_array(numbers)
+  max_product = 1
+  
+  (0..numbers.length - 4).each { |index|
+    four_numbers = []
+    (0..3).each { |position|
+      four_numbers << numbers[index + position]
+    }
+    
+    product = four_numbers.inject(1) { |mem, var| mem * var }
+    max_product = product if (max_product < product)
+  }
+  
+  return max_product
+end
+
+# calculates the maximum product of 4 adjacent numbers from an array of arrays, supposing to represent an array of lines of numbers
+def max_product_of_four_adjacent_numbers_from_collection_of_arrays(lines)
+  max_product = 1
+  
+  lines.each {|line|
+    line_max = max_product_of_four_adjacent_numbers_from_array(line)
+    max_product = line_max if (max_product < line_max)
+  }
+  
+  return max_product
+end
 
 grid_hash = {}
 
@@ -44,85 +71,90 @@ grid_file.each {|line|
   row+=1
 }
 
-grid_hash.each_pair {|key, value|
-  puts "#{key} => #{value}"
-}
+final_results = []
 
-# check vertically
-vertical_maximum_product = 1
-
+# get all vertical lines as arrays of numbers
+all_vertical_lines = []
 (0..16).each { |column|
+  vertical_line = []
   (0..16).each { |row|
-    four_numbers = []
-    (row..row+3).each {|index|
-      four_numbers << grid_hash[[index, column]]
-    }
-    
-    product = four_numbers.inject(1) {|memo, num| memo * num }
-    vertical_maximum_product = product if (vertical_maximum_product < product)
+    vertical_line << grid_hash[[row, column]]
   }
+  
+  all_vertical_lines << vertical_line
 }
 
-puts "vertical: " + vertical_maximum_product.to_s
+max_vertical =
+max_product_of_four_adjacent_numbers_from_collection_of_arrays(all_vertical_lines)
+    
+final_results << max_vertical
 
 # check horizontally
-horizontal_maximum_product = 1
+all_horizontal_lines = []
+(0..16).each { |row|
+  horizontal_line = []
+  (0..16).each { |column|
+    horizontal_line << grid_hash[[row, column]]
+  }
+  
+  all_horizontal_lines << horizontal_line
+}
 
-(0..16).each {|row|
-  (0..16).each {|column|
-    four_numbers = []
-    (column..column+3).each{|index|
-      four_numbers << grid_hash[[row, index]]
-    }
+max_horizontal = max_product_of_four_adjacent_numbers_from_collection_of_arrays(all_horizontal_lines)
     
-    product = four_numbers.inject(1) { |mem, var| mem * var }
-    horizontal_maximum_product = product if (horizontal_maximum_product < product)
-  }
-}
+final_results << max_horizontal
 
-puts "horizontal: " + horizontal_maximum_product.to_s
-
-#check diagonally
-diagonal_maximum_product = 1
-
-# middle
-# =>          (0,0) (1,1) (2,2) (3,3) | (1,1) (2,2) (3,3) (4,4) | ... | (16,16) (17,17) (18,18) (19,19)
-middle_max_product = 1
-(0..16).each {|row_column|
-  four_numbers = []
-  (0..3).each {|index|
-    four_numbers << grid_hash[[row_column + index, row_column + index]]
+# check diagonally UL -> BR
+all_diagonal_lines = []
+(0..19).each{|row_or_column|
+  diagonal_line_up = []
+  diagonal_line_down = []
+  
+  (0..19-row_or_column).each{|index|
+    # e.g. (0,4), (1,5), (2,6) ... (14, 18), (15, 19)
+    diagonal_line_up << grid_hash[[index, index + row_or_column]]
+    diagonal_line_down << grid_hash[[index + row_or_column, index]]
   }
   
-  product = four_numbers.inject(1) { |mem, var| mem * var }
-  middle_max_product = product if (middle_max_product < product)
+  all_diagonal_lines << diagonal_line_up
+  all_diagonal_lines << diagonal_line_down
 }
 
-# =>          - upper
-#             (0,1) (1,2) (2,3) (3,4) | (1,2) (2,3) (3,4) (4,5) | ... | (18,19)
-# =>          (0,2) (1,3) (2,4) (3,5) | (1,3) (2,4) (3,5) (4,6) | ...
-# =>          ....
-# =>          (0,16) (1,17) (2,18) (3,19)
-# =>          - lower (opposite of upper)
-# =>          (1,0) (2,1) (3,2) (4,3)
-
-upper_max = 1
-lower_max = 1
-(0..16).each{|start_index|
-  upper_four_numbers = []
-  lower_four_numbers = []
+max_diagonal_ul_br = max_product_of_four_adjacent_numbers_from_collection_of_arrays(all_diagonal_lines)
+    
+final_results << max_diagonal_ul_br
+    
+# check diagonally BR -> UL
+all_diagonals = []
+(0..19).each{|sum_between_components|
+  diagonal_line_up = []
   
-  (start_index..start_index+3).each {|second_index|    
-    upper_four_numbers << grid_hash[[start_index, second_index]]
-    lower_four_numbers << grid_hash[[second_index, start_index]]    
+  (0..sum_between_components).each{|index|
+    diagonal_line_up << grid_hash[[index, sum_between_components - index]]
   }
   
-  upper_product = upper_four_numbers.inject(1) { |mem, var| mem * var }
-  lower_product = lower_four_numbers.inject(1) { |mem, var| mem * var }
-
-  upper_max = upper_product if (upper_max < upper_product)
-  lower_max = lower_product if (lower_max < lower_product)
+  all_diagonals << diagonal_line_up
 }
 
-maxes = [vertical_maximum_product, horizontal_maximum_product, middle_max_product, upper_max, lower_max]
-puts maxes.sort.inspect
+max_diagonal_br_ul_1 =
+max_product_of_four_adjacent_numbers_from_collection_of_arrays(all_diagonals)
+    
+final_results << max_diagonal_br_ul_1
+    
+    
+last_diagonals = []
+(20..38).each{|sum|
+  start = sum - 19  # start is also the row
+  diagonal = []
+  (start..19).each{|row|
+    diagonal << grid_hash[[row, sum - row]]
+  }
+  
+  last_diagonals << diagonal
+}
+
+max_diagonal_br_ul_2 = max_product_of_four_adjacent_numbers_from_collection_of_arrays(last_diagonals)
+    
+final_results << max_diagonal_br_ul_2
+
+puts final_results.sort.inspect
