@@ -23,12 +23,22 @@ triangle_index = 1
 divisors = current_triangle_number.divisors
 
 while divisors.length < 500
-  triangle_index = triangle_index.next
-  current_triangle_number += triangle_index
-      
-  if (current_triangle_number.number_of_potential_divisors >= 500)
-    potential_divisors = current_triangle_number.potential_divisors
-    
+  triangle_index += 1
+  current_triangle_number = (triangle_index * (triangle_index + 1))/2
+  
+  # n and n+1 (/2 - because the result divides by 2) will never share the same divisors (except for 1)
+  number_of_divisors1 = 0
+  number_of_divisors2 = 0
+  
+  if triangle_index % 2 == 0
+    number_of_divisors1 = (triangle_index/2).number_of_divisors
+    number_of_divisors1 = (triangle_index + 1).number_of_divisors
+  else
+    number_of_divisors1 = ((triangle_index + 1)/2).number_of_divisors
+    number_of_divisors1 = triangle_index.number_of_divisors
+  end
+  
+  if (number_of_divisors1 + number_of_divisors1 >= 500)    
     puts "\t\t === trying for #{current_triangle_number} ==="
     divisors = current_triangle_number.divisors
   elsif (triangle_index % 1000 == 0)
@@ -36,4 +46,4 @@ while divisors.length < 500
   end
 end
 
-puts "Found it: #{number} => #{divisors}"
+puts "Found it: #{current_triangle_number} => #{divisors}"
