@@ -17,6 +17,7 @@ module PrimeDivisors
     hash_prime_divisors.values
   end
   
+  #[2,2,2,2,3,3,5,13]
   def prime_divisors
     prime_divisors = []
     max = self / 2 + 1
