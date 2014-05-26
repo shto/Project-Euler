@@ -84,8 +84,7 @@ all_vertical_lines = []
   all_vertical_lines << vertical_line
 }
 
-max_vertical =
-max_product_of_four_adjacent_numbers_from_collection_of_arrays(all_vertical_lines)
+max_vertical = max_product_of_four_adjacent_numbers_from_collection_of_arrays(all_vertical_lines)
     
 final_results << max_vertical
 
