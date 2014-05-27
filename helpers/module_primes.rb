@@ -5,7 +5,7 @@ module PrimeDivisors
     return Prime.prime?(self)    
   end
   
-  # [[2,2,2,2], [3,3], [5], [13]]
+  # [[2,2,2,2], [3,3], [5], [13]], ignores 1
   def grouped_prime_divisors
     hash_prime_divisors = {}
     prime_divisors = self.prime_divisors
@@ -22,7 +22,7 @@ module PrimeDivisors
     prime_divisors = []
     max = self / 2 + 1
     
-    return [1, self] if self.is_prime?
+    return [self] if self.is_prime?
     
     all_primes = Prime.each(max)
     number = self
@@ -32,6 +32,8 @@ module PrimeDivisors
         prime_divisors << pn
         number /= pn
       end
+      
+      break if number == 1
     }
         
     prime_divisors

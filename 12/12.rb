@@ -32,16 +32,17 @@ while divisors.length < 500
   
   if triangle_index % 2 == 0
     number_of_divisors1 = (triangle_index/2).number_of_divisors
-    number_of_divisors1 = (triangle_index + 1).number_of_divisors
+    number_of_divisors2 = (triangle_index + 1).number_of_divisors
   else
     number_of_divisors1 = ((triangle_index + 1)/2).number_of_divisors
-    number_of_divisors1 = triangle_index.number_of_divisors
+    number_of_divisors2 = triangle_index.number_of_divisors
   end
   
-  if (number_of_divisors1 + number_of_divisors1 >= 500)    
-    puts "\t\t === trying for #{current_triangle_number} ==="
+  if (number_of_divisors1 * number_of_divisors2 >= 500)
     divisors = current_triangle_number.divisors
-  elsif (triangle_index % 1000 == 0)
+  end
+  
+  if (triangle_index % 1000 == 0)
     puts "==> #{triangle_index}: #{current_triangle_number}"
   end
 end
