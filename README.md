@@ -1,3 +1,6 @@
 # README #
 
-This repo contains the Ruby solutions for the problem set on Project Euler.
+This repo contains the solutions for the problem set on Project Euler in the following languages:
+
+- Ruby
+- Swift
